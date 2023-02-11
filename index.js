@@ -1,10 +1,11 @@
 const contacts = require("./contacts");
+const { program } = require("commander");
 
 const invokeAction = async ({ action, id, name, email, phone }) => {
   switch (action) {
     case "list":
       const allContacts = await contacts.listContacts();
-      console.log(allContacts);
+      console.table(allContacts);
       break;
     case "get":
       const foundContact = await contacts.getContactById(id);
@@ -32,24 +33,15 @@ const invokeAction = async ({ action, id, name, email, phone }) => {
   }
 };
 
-// console.log(invokeAction({ action: "list" }));
-// console.log(invokeAction({ action: "get", id: "1" }));
-// console.log(
-//   invokeAction({
-//     action: "add",
-//     name: "Junior Petrovych",
-//     email: "jun@petrovych.com",
-//     phone: "(123) 456-7890",
-//   })
-// );
-console.log(invokeAction({ action: "remove", id: "10" }));
+program
+  .option("-a, --action <type>", "choose action")
+  .option("-i, --id <type>", "user id")
+  .option("-n, --name <type>", "user name")
+  .option("-e, --email <type>", "user email")
+  .option("-p, --phone <type>", "user phone");
 
-// console.log(
-//   invokeAction({
-//     action: "update",
-//     id: "axqIYbM9GFynpXQdLbGlW",
-//     name: "Junior Petrovych",
-//     email: "junior@petrovych.com",
-//     phone: "(123) 456-7890",
-//   })
-// );
+program.parse();
+
+const options = program.opts();
+
+invokeAction(options);
